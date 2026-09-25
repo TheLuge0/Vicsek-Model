@@ -1,5 +1,3 @@
-// gcc -g -Wall -Wextra -fsanitize=address -o vicsek.exe -lm vicsek.c $(sdl2-config --cflags --libs)
-
 /* Importation des modules */
 #include <SDL2/SDL.h>
 #include <stdio.h>
@@ -111,6 +109,7 @@ void DrawVector(SDL_Renderer* renderer, int x, int y, double vx, double vy){
     SDL_RenderDrawLine(renderer, x2, y2, xRight, yRight);
 }
 
+
 /* Calcul de l'ordre de Vicsek */
 double calcul_order_1(rectangle_list_t groupe){
   double sum_x = 0.0;
@@ -152,6 +151,7 @@ rectangle_list_t init_list_rectangle_t(int number){
   return result;
 }
 
+
 /* Fonction pour mettre a jour le rendu */
 void render(rectangle_list_t groupe, SDL_Color color){
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -162,6 +162,7 @@ void render(rectangle_list_t groupe, SDL_Color color){
   }
   SDL_RenderPresent(renderer);
 }
+
 
 /* Calculer la nouvelle vitesse du poisson i */
 double* get_new_vitesse(int i, rectangle_list_t groupe){
@@ -184,6 +185,7 @@ double* get_new_vitesse(int i, rectangle_list_t groupe){
 }
 
 
+/* Fonction qui update d'un pas de temps T la modèle*/
 void update(rectangle_list_t groupe, int T){
   for (int t = 0; t < T; t ++){
     double* Wx = malloc(sizeof(double)*groupe.number);
@@ -233,43 +235,13 @@ int main(int argc, char *argv[]){
 
   rectangle_list_t groupe = init_list_rectangle_t(FISH_NUMBER);
   render(groupe, blanc);
-  int timer = 1;
-  double counter = 0;
-  double total_order_1 = 0;
-
-  /* Gestion des résultats */
-  FILE* fichier_donnees = fopen("res.csv", "w");
-  fprintf(fichier_donnees, "Pas_de_Temps, Ordre_de_Polarisation\n");
-
-  /* SDL_Delay(300); */
-  /* update(groupe, DELTA_TIME); */
-  /* render(groupe, bleu); */
-  /* SDL_Delay(5000); */
-  /* printf("Ordre de Vicsek : %f\n", calcul_order_1(groupe)); */
 
   while (game_is_running){
-    if (timer > 100){
-      total_order_1 += calcul_order_1(groupe);
-      counter += 1;
-    }
-    if (timer == 400){
-      printf("Ordre de Vicsek moyen : %f\n", total_order_1/counter);
-      break;
-    }
-    /* if (calcul_order_1(groupe) > 0.8){ */
-    /*   printf("Nombre d'itération : %d\n", timer); */
-    /*   break; */
-    /* } */
-
-    fprintf(fichier_donnees, "%d, %f\n", timer, calcul_order_1(groupe));
-
-    timer += 1;
     update(groupe, DELTA_TIME);
     render(groupe, bleu);
     SDL_Delay(30);
     process_input();
   }
-  fclose(fichier_donnees);
   free(groupe.poissons);
   destroy_window();
 
