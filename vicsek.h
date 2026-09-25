@@ -15,7 +15,7 @@
 #define FISH_NUMBER 500
 
 #define INFLUENCE_RADIUS 150 
-#define NOISE 1.275
+#define NOISE 0.5
 #define DELTA_TIME 1
 #define DT 0.03
 
